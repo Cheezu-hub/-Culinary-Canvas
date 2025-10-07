@@ -26,7 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- GLOBAL STATE & CONFIGURATION ---
     const MAX_RECENT_SEARCHES = 5;
-    let recipeCache = {};
+    // recipeCache will now only store API fetched recipes by ID
+    let apiRecipeCache = {}; 
 
     function generateUniqueId() {
         return 'recipe_' + Date.now() + Math.floor(Math.random() * 1000);
@@ -34,11 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- RECIPE FETCHING AND DISPLAY SECTION ---
     function renderRecipeCard(meal, targetGrid) {
+        // Prevent rendering null meals
+        if (!meal) return;
+
         const card = document.createElement('div');
         card.classList.add('recipe-card');
         
         const favorites = getFavorites();
-        const mealId = meal.idMeal || meal.id;
+        const mealId = meal.idMeal || meal.id; // Use idMeal for API, id for uploaded
         const isFavorite = favorites.some(fav => (fav.idMeal || fav.id) === mealId);
         const favoriteClass = isFavorite ? 'active' : '';
 
@@ -48,45 +52,89 @@ document.addEventListener('DOMContentLoaded', () => {
 
         card.innerHTML = `
             <img src="${meal.strMealThumb || meal.image}" alt="${meal.strMeal || meal.name}">
-            <i class="fas fa-heart favorite-icon ${favoriteClass}" data-id="${mealId}"></i>
+            <i class="fas fa-heart favorite-icon ${favoriteClass}" data-id="${mealId}" data-is-uploaded="${isUploaded}"></i>
             <div class="card-content">
                 <h3>${meal.strMeal || meal.name}</h3>
                 <p>${instructionsSnippet}</p>
                 <div class="card-meta">
                     <span class="tag">${areaTag}</span>
                 </div>
-                <button class="view-recipe-btn" data-id="${mealId}" data-uploaded="${isUploaded}">View Recipe</button>
+                <button class="view-recipe-btn" data-id="${mealId}" data-is-uploaded="${isUploaded}">View Recipe</button>
             </div>
         `;
         targetGrid.appendChild(card);
     }
 
-    async function fetchRecipes(query = '') {
+    async function fetchAndRenderAllRecipes(query = '', cuisine = '') {
         recipeGrid.innerHTML = "<p>Loading recipes...</p>";
-        let url = query
-            ? `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`
-            : "https://www.themealdb.com/api/json/v1/1/search.php?f=a";
+        let apiMeals = [];
 
         try {
+            // Fetch from API
+            let url;
+            if (query) {
+                url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`;
+            } else if (cuisine) {
+                url = `https://www.themealdb.com/api/json/v1/1/filter.php?a=${cuisine}`;
+            } else {
+                url = "https://www.themealdb.com/api/json/v1/1/search.php?f=a"; // Default initial fetch
+            }
+
             const response = await fetch(url);
             const data = await response.json();
             
-            recipeGrid.innerHTML = "";
-            recipeCache = {};
-
+            apiRecipeCache = {}; // Clear API cache on new fetch
             if (data.meals) {
-                data.meals.forEach(meal => {
-                    recipeCache[meal.idMeal] = meal;
-                    renderRecipeCard(meal, recipeGrid);
+                // For cuisine filter, filter API data, then fetch details for each
+                if (cuisine && !query) {
+                    const mealPromises = data.meals.slice(0, 12).map(async (summary) => {
+                        const detailResponse = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${summary.idMeal}`);
+                        const detailData = await detailResponse.json();
+                        return detailData.meals[0];
+                    });
+                    apiMeals = await Promise.all(mealPromises);
+                } else {
+                    apiMeals = data.meals;
+                }
+                apiMeals.forEach(meal => {
+                    if (meal) apiRecipeCache[meal.idMeal] = meal;
                 });
-            } else {
-                recipeGrid.innerHTML = "<p>No recipes found. Try a different search!</p>";
             }
         } catch (error) {
-            console.error("Failed to fetch recipes:", error);
-            recipeGrid.innerHTML = "<p>Failed to load recipes. Please try again later.</p>";
+            console.error("Failed to fetch API recipes:", error);
+            // Don't block uploaded recipes from showing if API fails
+        }
+
+        // Get uploaded recipes from localStorage
+        const uploadedRecipes = getUploadedRecipes();
+
+        // Combine and filter if a query is present
+        let allRecipesToDisplay = [];
+        if (query) {
+            const lowerCaseQuery = query.toLowerCase();
+            allRecipesToDisplay = [...apiMeals, ...uploadedRecipes].filter(meal =>
+                (meal.strMeal || meal.name).toLowerCase().includes(lowerCaseQuery) ||
+                (meal.strInstructions || meal.instructions || '').toLowerCase().includes(lowerCaseQuery) ||
+                (meal.strArea || meal.cuisine || '').toLowerCase().includes(lowerCaseQuery)
+            );
+        } else if (cuisine) {
+            const lowerCaseCuisine = cuisine.toLowerCase();
+            allRecipesToDisplay = [...apiMeals, ...uploadedRecipes].filter(meal =>
+                (meal.strArea || meal.cuisine || '').toLowerCase() === lowerCaseCuisine
+            );
+        } else {
+            allRecipesToDisplay = [...apiMeals, ...uploadedRecipes];
+        }
+
+
+        recipeGrid.innerHTML = ""; // Clear existing
+        if (allRecipesToDisplay.length > 0) {
+            allRecipesToDisplay.forEach(meal => renderRecipeCard(meal, recipeGrid));
+        } else {
+            recipeGrid.innerHTML = "<p>No recipes found. Try a different search or filter!</p>";
         }
     }
+
 
     // --- RECIPE MODAL SECTION ---
     async function openRecipeModal(mealId, isUploaded = false) {
@@ -95,21 +143,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const uploadedRecipes = getUploadedRecipes();
             meal = uploadedRecipes.find(r => r.id === mealId);
         } else {
-            meal = recipeCache[mealId];
+            meal = apiRecipeCache[mealId]; // Check API cache first
             if (!meal) {
-                const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`);
-                const data = await response.json();
-                meal = data.meals[0];
+                // If not in cache, fetch from API
+                try {
+                    const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`);
+                    const data = await response.json();
+                    meal = data.meals[0];
+                    if (meal) {
+                        apiRecipeCache[meal.idMeal] = meal; // Add to cache
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch meal details for modal:", error);
+                    return;
+                }
             }
         }
 
-        if (!meal) return;
+        if (!meal) {
+            console.error("Meal not found for modal:", mealId, "Is Uploaded:", isUploaded);
+            return;
+        }
 
         modalRecipeTitle.textContent = meal.strMeal || meal.name;
         modalRecipeImage.src = meal.strMealThumb || meal.image;
         modalIngredientsList.innerHTML = "";
 
         if (isUploaded) {
+            // Split by newline for uploaded ingredients
             meal.ingredients.split('\n').forEach(ingredientText => {
                 if (ingredientText.trim()) {
                     const li = document.createElement('li');
@@ -117,7 +178,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     modalIngredientsList.appendChild(li);
                 }
             });
+            // For uploaded recipes, YouTube link might not exist
+            modalYoutubeLink.href = '#';
+            modalYoutubeLink.style.display = "none";
         } else {
+            // Original API logic for ingredients
             for (let i = 1; i <= 20; i++) {
                 const ingredient = meal[`strIngredient${i}`];
                 const measure = meal[`strMeasure${i}`];
@@ -127,12 +192,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     modalIngredientsList.appendChild(li);
                 }
             }
+            modalYoutubeLink.href = meal.strYoutube || '#';
+            modalYoutubeLink.style.display = meal.strYoutube ? "inline-block" : "none";
         }
         
         modalInstructions.textContent = meal.strInstructions || meal.instructions;
-        modalYoutubeLink.href = meal.strYoutube || '#';
-        modalYoutubeLink.style.display = meal.strYoutube ? "inline-block" : "none";
-
+        
         recipeModal.style.display = "flex";
     }
 
@@ -190,8 +255,34 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('favorites', JSON.stringify(favorites));
     }
 
-    function toggleFavorite(mealData, heartIcon) {
-        const mealId = mealData.idMeal || mealData.id;
+    // Modified to correctly retrieve meal data from API cache or uploaded recipes
+    async function toggleFavorite(mealId, isUploaded, heartIcon) {
+        let mealData;
+        if (isUploaded) {
+            mealData = getUploadedRecipes().find(r => r.id === mealId);
+        } else {
+            mealData = apiRecipeCache[mealId];
+            if (!mealData) {
+                // If not in cache, fetch from API (e.g., if page reloaded or direct access)
+                try {
+                    const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`);
+                    const data = await response.json();
+                    mealData = data.meals[0];
+                    if (mealData) {
+                        apiRecipeCache[mealData.idMeal] = mealData; // Add to cache
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch meal details for favorite toggle:", error);
+                    return;
+                }
+            }
+        }
+
+        if (!mealData) {
+            console.error("Meal data not found for toggling favorite:", mealId);
+            return;
+        }
+
         const isFavorite = heartIcon.classList.toggle('active');
 
         if (isFavorite) {
@@ -200,11 +291,12 @@ document.addEventListener('DOMContentLoaded', () => {
             removeFavorite(mealId);
         }
 
+        // Update all heart icons for this meal ID across different grids
         document.querySelectorAll(`.favorite-icon[data-id="${mealId}"]`).forEach(icon => {
             icon.classList.toggle('active', isFavorite);
         });
         
-        renderFavorites();
+        renderFavorites(); // Re-render favorites grid to reflect changes
     }
 
     function renderFavorites() {
@@ -220,9 +312,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addUploadedRecipe(recipe) {
         const recipes = getUploadedRecipes();
-        recipes.unshift(recipe);
+        recipes.unshift(recipe); // Add new recipe to the beginning
         localStorage.setItem('uploadedRecipes', JSON.stringify(recipes));
         renderUploadedRecipes();
+        
+        fetchAndRenderAllRecipes(searchInput.value, cuisineFilter.value); 
     }
 
     function renderUploadedRecipes() {
@@ -233,12 +327,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- EVENT HANDLING ---
     function performSearch(query) {
-        if (query.trim()) {
-            fetchRecipes(query.trim());
-            addRecentSearch(query.trim());
-        } else {
-            fetchRecipes();
-        }
+        addRecentSearch(query.trim()); 
+        fetchAndRenderAllRecipes(query.trim(), cuisineFilter.value);
     }
 
     async function handleGridClick(event) {
@@ -246,33 +336,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (target.classList.contains('view-recipe-btn')) {
             const mealId = target.dataset.id;
-            const isUploaded = target.dataset.uploaded === 'true';
+            const isUploaded = target.dataset.isUploaded === 'true'; 
             openRecipeModal(mealId, isUploaded);
         }
 
         if (target.classList.contains('favorite-icon')) {
             const mealId = target.dataset.id;
-            const isUploaded = target.closest('.recipe-card').querySelector('.view-recipe-btn').dataset.uploaded === 'true';
-            
-            let mealData;
-            if (isUploaded) {
-                mealData = getUploadedRecipes().find(r => r.id === mealId);
-            } else {
-                mealData = recipeCache[mealId];
-                if (!mealData) {
-                    try {
-                        const response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`);
-                        const data = await response.json();
-                        mealData = data.meals[0];
-                    } catch (error) {
-                        console.error("Failed to fetch meal details:", error);
-                        return;
-                    }
-                }
-            }
-            if (mealData) {
-                toggleFavorite(mealData, target);
-            }
+            const isUploaded = target.dataset.isUploaded === 'true'; 
+            await toggleFavorite(mealId, isUploaded, target); 
         }
     }
 
@@ -293,42 +364,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cuisineFilter.addEventListener('change', async (e) => {
         const selectedCuisine = e.target.value;
-        if (selectedCuisine) {
-            recipeGrid.innerHTML = "<p>Loading recipes by cuisine...</p>";
-            try {
-                const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${selectedCuisine}`);
-                const data = await response.json();
-                
-                recipeGrid.innerHTML = "";
-                if (data.meals) {
-                    const mealPromises = data.meals.slice(0, 12).map(async (summary) => {
-                        const detailResponse = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${summary.idMeal}`);
-                        const detailData = await detailResponse.json();
-                        return detailData.meals[0];
-                    });
-                    const detailedMeals = await Promise.all(mealPromises);
-                    detailedMeals.forEach(meal => {
-                        if (meal) {
-                            recipeCache[meal.idMeal] = meal;
-                            renderRecipeCard(meal, recipeGrid);
-                        }
-                    });
-                } else {
-                    recipeGrid.innerHTML = "<p>No recipes found for this cuisine.</p>";
-                }
-            } catch (error) {
-                console.error("Failed to fetch by cuisine:", error);
-                recipeGrid.innerHTML = "<p>Failed to load recipes.</p>";
-            }
-        } else {
-            fetchRecipes();
-        }
+        fetchAndRenderAllRecipes(searchInput.value, selectedCuisine);
     });
 
     uploadRecipeImage.addEventListener('change', (e) => {
         fileUploadDisplay.textContent = e.target.files.length > 0 ? e.target.files[0].name : 'No file chosen';
     });
     fileUploadDisplay.addEventListener('click', () => uploadRecipeImage.click());
+
     recipeUploadForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const name = uploadRecipeName.value.trim();
@@ -351,10 +394,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 cuisine,
                 ingredients,
                 instructions,
-                image: event.target.result,
+                image: event.target.result, 
                 isUploaded: true
             };
-            addUploadedRecipe(newRecipe);
+            addUploadedRecipe(newRecipe); // Store and render uploaded recipes
             uploadMessage.textContent = 'Recipe uploaded successfully!';
             uploadMessage.className = 'upload-message success';
             recipeUploadForm.reset();
@@ -365,12 +408,12 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadMessage.textContent = 'Failed to read image file.';
             uploadMessage.className = 'upload-message error';
         };
-        reader.readAsDataURL(imageFile);
+        reader.readAsDataURL(imageFile); 
     });
 
     // --- INITIALIZATION ---
-    fetchRecipes();
+    fetchAndRenderAllRecipes(); 
     renderRecentSearches();
     renderFavorites();
-    renderUploadedRecipes();
+    renderUploadedRecipes(); 
 });
