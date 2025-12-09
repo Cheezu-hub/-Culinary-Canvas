@@ -1,0 +1,679 @@
+/* --- Global Styles --- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&family=Edu+NSW+ACT+Foundation:wght@700&display=swap');
+
+:root {
+    --primary-bg-dark: #1a1a1a;
+    --secondary-bg-dark: #2a2a2a;
+    --text-light: #f0f0f0;
+    --text-muted: #b0b0b0;
+    --accent-orange: #e76f51;
+    --accent-gold: #ffc107;
+    --card-bg: #222222;
+    --border-color: #333333;
+    --input-bg: #333333;
+    --button-hover-bg: #d65a3f;
+    --tag-bg: #444444;
+    --recent-tag-bg: #3c3c3c;
+    --recent-tag-hover: #e76f51;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--primary-bg-dark);
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- Navbar Section --- */
+.navbar {
+    background-color: var(--primary-bg-dark);
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--accent-orange);
+    display: flex;
+    align-items: center;
+}
+
+.navbar .logo-image {
+    height: 40px;
+    width: auto;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.navbar .nav-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    margin-left: 30px;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.navbar .nav-links a:hover {
+    color: var(--accent-orange);
+}
+
+/* --- Hero Section --- */
+.hero-section {
+    text-align: center;
+    padding: 80px 0;
+    background-color: var(--secondary-bg-dark);
+    border-bottom: 1px solid var(--border-color);
+    background-image: url('assets/hero_banner.png.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: var(--text-light);
+    position: relative;
+    z-index: 1;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+     background: rgba(0, 0, 0, 0.15);
+    z-index: -1;
+}
+
+.hero-section h1 {
+    font-family: 'Edu NSW ACT Foundation', cursive;
+    font-size: 3.5em;
+    color: var(--text-light);
+    margin-bottom: 20px;
+    font-weight: 700;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-section p {
+    font-family: 'Edu NSW ACT Foundation', cursive;
+    font-size: 1.2em;
+    color: var(--text-light);
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+/* --- Search and Filter Section --- */
+.search-filter-section {
+    padding: 40px 0;
+    background-color: var(--primary-bg-dark);
+}
+
+.search-filter-section .container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-bar {
+    position: relative;
+    flex-grow: 1;
+    max-width: 400px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--text-light);
+    font-size: 1em;
+    outline: none;
+}
+
+.search-bar i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.search-bar i:hover {
+    color: var(--accent-orange);
+}
+
+.filters {
+    display: flex;
+    gap: 15px;
+}
+
+.filters select {
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--text-light);
+    font-size: 1em;
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24' fill='%23b0b0b0'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1.2em;
+    padding-right: 30px;
+}
+
+/* --- Recent Searches Section --- */
+.recent-searches-section {
+    padding: 30px 0;
+    background-color: var(--primary-bg-dark);
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.recent-searches-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2em;
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+}
+
+.recent-search-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.recent-search-tag {
+    background-color: var(--recent-tag-bg);
+    color: var(--text-light);
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-size: 0.9em;
+}
+
+.recent-search-tag:hover {
+    background-color: var(--accent-orange);
+    color: var(--primary-bg-dark);
+}
+
+.clear-button {
+    background-color: var(--text-muted);
+    color: var(--primary-bg-dark);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+.clear-button:hover {
+    background-color: #929292;
+}
+
+/* --- Recipe Grid Section (Recipes, Favorites, Uploads) --- */
+.recipe-grid-section {
+    padding: 60px 0;
+    background-color: var(--secondary-bg-dark);
+    border-top: 1px solid var(--border-color);
+}
+
+.recipe-grid-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5em;
+    color: var(--accent-gold);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.recipe-card {
+    background-color: var(--card-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.recipe-card:hover {
+    transform: translateY(-5px);
+}
+
+.recipe-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.recipe-card .card-content {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.recipe-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5em;
+    color: var(--accent-orange);
+    margin-bottom: 10px;
+}
+
+.recipe-card p {
+    color: var(--text-muted);
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.recipe-card .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 0.85em;
+    color: var(--text-muted);
+}
+
+.recipe-card .tag {
+    background-color: var(--tag-bg);
+    padding: 5px 12px;
+    border-radius: 20px;
+}
+
+.no-favorites,
+.no-uploads {
+    text-align: center;
+    grid-column: 1 / -1;
+    color: var(--text-muted);
+    font-size: 1.1em;
+    padding: 30px;
+}
+
+/* --- Favorite Icon --- */
+.favorite-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.8em;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.favorite-icon.active {
+    color: var(--accent-orange);
+    transform: scale(1.1);
+}
+
+.favorite-icon:hover {
+    color: var(--accent-gold);
+    transform: scale(1.2);
+}
+
+/* --- Buttons --- */
+.view-recipe-btn {
+    background-color: var(--accent-orange);
+    color: var(--text-light);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.view-recipe-btn:hover {
+    background-color: var(--button-hover-bg);
+}
+
+/* --- Share Recipe Section (Form) --- */
+.share-recipe-section {
+    padding: 60px 0;
+    background-color: var(--primary-bg-dark);
+    border-top: 1px solid var(--border-color);
+}
+
+.share-recipe-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5em;
+    color: var(--accent-gold);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.share-recipe-section p {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    font-size: 1.1em;
+}
+
+.recipe-upload-form {
+    max-width: 700px;
+    margin: 0 auto;
+    background-color: var(--secondary-bg-dark);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-light);
+    font-size: 1.1em;
+}
+
+.form-group input[type="text"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--text-light);
+    font-size: 1em;
+    outline: none;
+    resize: vertical;
+}
+
+.form-group input[type="file"] {
+    display: none;
+}
+
+.file-upload-display {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.file-upload-display:hover {
+    background-color: #444444;
+    border-color: var(--accent-orange);
+}
+
+.submit-recipe-btn {
+    background-color: var(--accent-orange);
+    color: var(--text-light);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.1em;
+    width: 100%;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+.submit-recipe-btn:hover {
+    background-color: var(--button-hover-bg);
+}
+
+.upload-message {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 600;
+}
+
+.upload-message.success {
+    color: lightgreen;
+}
+
+.upload-message.error {
+    color: red;
+}
+
+/* --- Modal Section --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.modal-content {
+    background: var(--secondary-bg-dark);
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 800px;
+    position: relative;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9);
+    opacity: 0;
+    animation: fadeInScale 0.3s forwards;
+}
+
+@keyframes fadeInScale {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 30px;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+.close-button:hover {
+    color: var(--accent-orange);
+}
+
+#modalRecipeTitle {
+    text-align: center;
+    color: var(--accent-orange);
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+#modalRecipeImage {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.modal-body h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--accent-gold);
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 1.6em;
+}
+
+.modal-body ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+.modal-body ul li {
+    background-color: var(--card-bg);
+    padding: 8px 12px 8px 30px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.modal-body ul li::before {
+    content: "\2022";
+    color: var(--accent-orange);
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2em;
+}
+
+.modal-body p {
+    color: var(--text-muted);
+    font-size: 1em;
+    line-height: 1.7;
+    white-space: pre-wrap;
+}
+
+#modalYoutubeLink {
+    display: inline-block;
+    margin-top: 25px;
+    background-color: #c4302b;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+#modalYoutubeLink:hover {
+    background-color: #af201b;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .navbar .container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .navbar .nav-links {
+        margin-top: 10px;
+    }
+
+    .navbar .nav-links a {
+        margin: 0 15px;
+    }
+
+    .hero-section h1 {
+        font-size: 2.5em;
+    }
+
+    .hero-section p {
+        font-size: 1em;
+    }
+
+    .search-filter-section .container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filters {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .search-bar {
+        max-width: 100%;
+    }
+
+    .recipe-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        padding: 20px;
+    }
+
+    #modalRecipeTitle {
+        font-size: 2em;
+    }
+
+    .recipe-upload-form {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar .logo {
+        font-size: 1.5em;
+    }
+
+    .navbar .logo-image {
+        height: 35px;
+        margin-right: 8px;
+    }
+
+    .navbar .nav-links a {
+        margin: 0 10px;
+        font-size: 0.9em;
+    }
+}
