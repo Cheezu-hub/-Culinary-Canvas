@@ -99,7 +99,7 @@ export function initThreeJSBackground() {
   function animate() {
     requestAnimationFrame(animate);
 
-    time += 0.001;
+    time += 0.0015;
 
     // Smooth camera movement towards mouse
     targetX = mouseX * 0.5;
