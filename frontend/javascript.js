@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         max: 15,
         speed: 400,
         glare: true,
-        "max-glare": 0.2,
+        "max-glare": 0.3,
         scale: 1.02
     });
   }
