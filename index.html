@@ -1,0 +1,196 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Culinary Canvas - Recipes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Edu+NSW+ACT+Cursive:wght@400..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" href="assets/cropped_circle_image.png" type="image/png">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html"> <img src="assets/cropped_circle_image.png" alt="Website Logo" style="width:50px; height:50px;"> </a>
+            </div>
+            <nav class="nav-links">
+                <a href="#">Recipes</a>
+                <a href="#favorites-section">Favorites</a> 
+                <a href="#share-recipe-section">Share Recipe</a> 
+                
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <h1>Welcome to Culinary Canvas</h1>
+                <p>Discover a world of flavors. Browse, search, and get inspired by our collection of delicious recipes from around the globe.</p>
+            </div>
+        </section>
+
+        <section class="search-filter-section">
+            <div class="container">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search recipes...">
+                    <i class="fas fa-search" id="searchIcon"></i>
+                </div>
+                <div class="filters">
+                    <select id="cuisineFilter">
+                        <option value="">Filter by Cuisine</option>
+                        <option value="italian">Italian</option>
+                        <option value="indian">Indian</option>
+                        <option value="french">French</option>
+                        <option value="mexican">Mexican</option>
+                        <option value="asian">Asian</option>
+                        <option value="american">American</option>
+                        <option value="british">British</option>
+                        <option value="canadian">Canadian</option>
+                        <option value="chinese">Chinese</option>
+                        <option value="dutch">Dutch</option>
+                        <option value="egyptian">Egyptian</option>
+                        <option value="greek">Greek</option>
+                        <option value="irish">Irish</option>
+                        <option value="japanese">Japanese</option>
+                        <option value="malaysian">Malaysian</option>
+                        <option value="moroccan">Moroccan</option>
+                        <option value="russian">Russian</option>
+                        <option value="spanish">Spanish</option>
+                        <option value="thai">Thai</option>
+                        <option value="turkish">Turkish</option>
+                        <option value="vietnamese">Vietnamese</option>
+                    </select>
+                    <select id="dietaryFilter">
+                        <option value="">Filter by Dietary Need (Not yet implemented)</option>
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="vegan">Vegan</option>
+                        <option value="gluten-free">Gluten-Free</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="recent-searches-section">
+            <div class="container">
+                <h2>Your Recent Searches</h2>
+                <div class="recent-search-tags" id="recentSearchTags">
+                    
+                </div>
+                <button id="clearRecentSearchesBtn" class="clear-button">Clear Search History</button>
+            </div>
+        </section>
+
+        <section class="recipe-grid-section">
+            <div class="container recipe-grid" id="recipeGrid">
+                
+            </div>
+        </section>
+
+        <!-- Favorites Section -->
+        <section id="favorites-section" class="recipe-grid-section">
+            <div class="container">
+                <h2>Your Favorite Recipes</h2>
+                <div class="recipe-grid" id="favoritesGrid">
+                   
+                    <p class="no-favorites">You haven't added any favorites yet!</p>
+                </div>
+            </div>
+        </section>
+
+        
+        <section id="share-recipe-section" class="share-recipe-section">
+            <div class="container">
+                <h2>Share Your Recipe</h2>
+                <p>Have a delicious recipe to share? Upload it here and let the Culinary Canvas community enjoy your creation!</p>
+                <form id="recipeUploadForm" class="recipe-upload-form">
+                    <div class="form-group">
+                        <label for="uploadRecipeName">Recipe Name</label>
+                        <input type="text" id="uploadRecipeName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="uploadCuisine">Cuisine</label>
+                        <select id="uploadCuisine" required>
+                            <option value="">Select Cuisine</option>
+                            <option value="italian">Italian</option>
+                            <option value="indian">Indian</option>
+                            <option value="french">French</option>
+                            <option value="mexican">Mexican</option>
+                            <option value="asian">Asian</option>
+                            <option value="american">American</option>
+                            <option value="british">British</option>
+                            <option value="canadian">Canadian</option>
+                            <option value="chinese">Chinese</option>
+                            <option value="dutch">Dutch</option>
+                            <option value="egyptian">Egyptian</option>
+                            <option value="greek">Greek</option>
+                            <option value="irish">Irish</option>
+                            <option value="japanese">Japanese</option>
+                            <option value="malaysian">Malaysian</option>
+                            <option value="moroccan">Moroccan</option>
+                            <option value="russian">Russian</option>
+                            <option value="spanish">Spanish</option>
+                            <option value="thai">Thai</option>
+                            <option value="turkish">Turkish</option>
+                            <option value="vietnamese">Vietnamese</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="uploadIngredients">Ingredients (one per line)</label>
+                        <textarea id="uploadIngredients" rows="6" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="uploadInstructions">Instructions</label>
+                        <textarea id="uploadInstructions" rows="10" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="uploadRecipeImage">Recipe Photo</label>
+                        <input type="file" id="uploadRecipeImage" accept="image/*" required>
+                        <div class="file-upload-display" id="fileUploadDisplay">No file chosen</div>
+                    </div>
+                    <button type="submit" class="submit-recipe-btn">Share Recipe</button>
+                    <p id="uploadMessage" class="upload-message"></p>
+                </form>
+            </div>
+        </section>
+
+        <!-- New My Uploaded Recipes Section -->
+        <section id="my-uploaded-recipes-section" class="recipe-grid-section">
+            <div class="container">
+                <h2>My Uploaded Recipes</h2>
+                <div class="recipe-grid" id="uploadedRecipesGrid">
+                   
+                    <p class="no-uploads">You haven't uploaded any recipes yet!</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal -->
+    <div id="recipeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalRecipeTitle"></h2>
+            <img id="modalRecipeImage" src="" alt="Recipe Image">
+            <div class="modal-body">
+                <h3>Ingredients:</h3>
+                <ul id="modalIngredientsList"></ul>
+                <h3>Instructions:</h3>
+                <p id="modalInstructions"></p>
+                <a id="modalYoutubeLink" href="#" target="_blank">Watch on YouTube</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
