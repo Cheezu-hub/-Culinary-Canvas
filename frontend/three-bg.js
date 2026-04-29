@@ -1,5 +1,9 @@
 import * as THREE from 'three';
 
+/**
+ * Initializes a 3D animated particle background using Three.js.
+ * Includes mouse tracking and wavy animation.
+ */
 export function initThreeJSBackground() {
   const canvas = document.getElementById('bg-canvas');
   if (!canvas) return;
