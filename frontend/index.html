@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Culinary Canvas - Recipes</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/logo.png">
+</head>
+<body>
+    <canvas id="bg-canvas"></canvas>
+    
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Culinary Canvas Logo" class="logo-image">
+                Culinary Canvas
+            </div>
+            <div class="nav-links">
+                <a href="#recipes-section">Recipes</a>
+                <a href="#favorites-section">Favorites</a>
+                <a href="#my-uploaded-recipes-section">My Recipes</a>
+                <a href="#share-recipe-section">Share Recipe</a>
+                <a href="#" id="authLink">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1>Welcome to Culinary Canvas</h1>
+            <p>Discover a world of flavors. Browse, search, and get inspired by our collection of delicious recipes from around the globe.</p>
+        </div>
+    </section>
+
+    <!-- Search and Filter Section -->
+    <section class="search-filter-section">
+        <div class="container">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search recipes...">
+                <i class="fas fa-search" id="searchIcon"></i>
+            </div>
+            <div class="filters">
+                <select id="cuisineFilter">
+                    <option value="">Filter by Cuisine</option>
+                    <option value="Italian">Italian</option>
+                    <option value="Indian">Indian</option>
+                    <option value="French">French</option>
+                    <option value="Mexican">Mexican</option>
+                    <option value="Asian">Asian</option>
+                    <option value="American">American</option>
+                    <option value="British">British</option>
+                    <option value="Canadian">Canadian</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="Dutch">Dutch</option>
+                    <option value="Egyptian">Egyptian</option>
+                    <option value="Greek">Greek</option>
+                    <option value="Irish">Irish</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Malaysian">Malaysian</option>
+                    <option value="Moroccan">Moroccan</option>
+                    <option value="Russian">Russian</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="Thai">Thai</option>
+                    <option value="Turkish">Turkish</option>
+                    <option value="Vietnamese">Vietnamese</option>
+                    <option value="Other">Other</option>
+                </select>
+                <select id="dietaryFilter">
+                    <option value="">Filter by Dietary Need</option>
+                    <option value="Vegetarian">Vegetarian</option>
+                    <option value="Vegan">Vegan</option>
+                    <option value="Gluten-Free">Gluten-Free</option>
+                    <option value="Dairy-Free">Dairy-Free</option>
+                    <option value="Low-Carb">Low-Carb</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Searches Section -->
+    <section class="recent-searches-section">
+        <div class="container">
+            <h2>Your Recent Searches</h2>
+            <div id="recentSearchTags" class="recent-search-tags"></div>
+            <button id="clearRecentSearchesBtn" class="clear-button">Clear Search History</button>
+        </div>
+    </section>
+
+    <!-- Recipes Section -->
+    <section id="recipes-section" class="recipe-grid-section">
+        <div class="container">
+            <h2>Discover Recipes</h2>
+            <div id="recipeGrid" class="recipe-grid"></div>
+        </div>
+    </section>
+
+    <!-- Favorites Section -->
+    <section id="favorites-section" class="recipe-grid-section">
+        <div class="container">
+            <h2>Your Favorite Recipes</h2>
+            <div id="favoritesGrid" class="recipe-grid">
+                <p class="no-favorites">Please login to view favorites</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- My Uploaded Recipes Section -->
+    <section id="my-uploaded-recipes-section" class="recipe-grid-section">
+        <div class="container">
+            <h2>My Uploaded Recipes</h2>
+            <div id="uploadedRecipesGrid" class="recipe-grid">
+                <p class="no-uploads">Please login to view your recipes</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Share Recipe Section -->
+    <section id="share-recipe-section" class="share-recipe-section">
+        <div class="container">
+            <h2>Share Your Recipe</h2>
+            <p>Have a delicious recipe to share? Upload it here and let the Culinary Canvas community enjoy your creation!</p>
+            
+            <form id="recipeUploadForm" class="recipe-upload-form">
+                <input type="hidden" id="uploadRecipeId">
+                
+                <div class="form-group">
+                    <label for="uploadRecipeName">Recipe Name</label>
+                    <input type="text" id="uploadRecipeName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="uploadCuisine">Cuisine</label>
+                    <select id="uploadCuisine" required>
+                        <option value="">Select Cuisine</option>
+                        <option value="Italian">Italian</option>
+                        <option value="Indian">Indian</option>
+                        <option value="French">French</option>
+                        <option value="Mexican">Mexican</option>
+                        <option value="Asian">Asian</option>
+                        <option value="American">American</option>
+                        <option value="British">British</option>
+                        <option value="Canadian">Canadian</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Dutch">Dutch</option>
+                        <option value="Egyptian">Egyptian</option>
+                        <option value="Greek">Greek</option>
+                        <option value="Irish">Irish</option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="Malaysian">Malaysian</option>
+                        <option value="Moroccan">Moroccan</option>
+                        <option value="Russian">Russian</option>
+                        <option value="Spanish">Spanish</option>
+                        <option value="Thai">Thai</option>
+                        <option value="Turkish">Turkish</option>
+                        <option value="Vietnamese">Vietnamese</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="uploadIngredients">Ingredients (one per line)</label>
+                    <textarea id="uploadIngredients" rows="6" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="uploadInstructions">Instructions</label>
+                    <textarea id="uploadInstructions" rows="8" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Recipe Photo</label>
+                    <input type="file" id="uploadRecipeImage" accept="image/*">
+                    <div id="fileUploadDisplay" class="file-upload-display">No file chosen</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="uploadPrepTime">Prep Time (minutes)</label>
+                    <input type="number" id="uploadPrepTime" min="0" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="uploadCookTime">Cook Time (minutes)</label>
+                    <input type="number" id="uploadCookTime" min="0" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="uploadServings">Servings</label>
+                    <input type="number" id="uploadServings" min="1" value="4">
+                </div>
+                
+                <div class="form-group">
+                    <label for="uploadYoutubeLink">YouTube Link (optional)</label>
+                    <input type="url" id="uploadYoutubeLink" placeholder="https://youtube.com/watch?v=...">
+                </div>
+                
+                <div class="form-group">
+                    <label>Dietary Tags (hold Ctrl/Cmd to select multiple)</label>
+                    <select id="uploadDietaryTags" multiple>
+                        <option value="Vegetarian">Vegetarian</option>
+                        <option value="Vegan">Vegan</option>
+                        <option value="Gluten-Free">Gluten-Free</option>
+                        <option value="Dairy-Free">Dairy-Free</option>
+                        <option value="Low-Carb">Low-Carb</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="submit-recipe-btn">Share Recipe</button>
+                <div id="uploadMessage" class="upload-message"></div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content auth-modal-content">
+            <span class="close-button" id="closeAuthModal">&times;</span>
+            <div id="authForms">
+                <!-- Login Form -->
+                <div id="loginFormContainer">
+                    <h2>Login</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="submit-recipe-btn">Login</button>
+                        <p class="auth-switch">Don't have an account? <a href="#" id="showRegister">Register</a></p>
+                        <div id="loginMessage" class="upload-message"></div>
+                    </form>
+                </div>
+                
+                <!-- Register Form -->
+                <div id="registerFormContainer" style="display: none;">
+                    <h2>Register</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="registerUsername">Username</label>
+                            <input type="text" id="registerUsername" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email</label>
+                            <input type="email" id="registerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Password</label>
+                            <input type="password" id="registerPassword" required minlength="6">
+                        </div>
+                        <button type="submit" class="submit-recipe-btn">Register</button>
+                        <p class="auth-switch">Already have an account? <a href="#" id="showLogin">Login</a></p>
+                        <div id="registerMessage" class="upload-message"></div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- User Profile (shown when logged in) -->
+            <div id="userProfile" style="display: none;">
+                <h2>Welcome, <span id="userUsername"></span>!</h2>
+                <p>Email: <span id="userEmail"></span></p>
+                <button id="logoutBtn" class="submit-recipe-btn" style="background-color: var(--accent-red);">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recipe Modal -->
+    <div id="recipeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modalRecipeTitle"></h2>
+            <img id="modalRecipeImage" src="" alt="Recipe Image">
+            <div class="modal-body">
+                <h3>Ingredients:</h3>
+                <ul id="modalIngredientsList"></ul>
+                <h3>Instructions:</h3>
+                <p id="modalInstructions"></p>
+                <div id="modalRecipeMeta" class="modal-meta"></div>
+                <a id="modalYoutubeLink" href="#" target="_blank">Watch on YouTube</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTopBtn" title="Go to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script type="module" src="/javascript.js"></script>
+</body>
+</html>
