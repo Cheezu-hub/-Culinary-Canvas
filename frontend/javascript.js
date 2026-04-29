@@ -2,6 +2,10 @@ import { animate, stagger } from 'motion';
 import { initThreeJSBackground } from './three-bg.js';
 import VanillaTilt from 'vanilla-tilt';
 
+/**
+ * Main application logic for Culinary Canvas.
+ * Handles recipe fetching, rendering, and interactive UI elements.
+ */
 document.addEventListener('DOMContentLoaded', () => {
   initThreeJSBackground();
   // API Base URL
