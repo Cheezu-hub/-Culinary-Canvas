@@ -7,6 +7,7 @@ import VanillaTilt from 'vanilla-tilt';
  * Handles recipe fetching, rendering, and interactive UI elements.
  */
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('Culinary Canvas Initialized');
   initThreeJSBackground();
   // API Base URL
   const API_URL = 'http://localhost:5000/api';
