@@ -33,3 +33,7 @@ Culinary Canvas is a premium, beautifully designed recipe sharing platform. It f
 
 ## Design
 The design focuses on dark aesthetics with vibrant orange and gold accents, using deep shadows and blurred backdrops to create a high-end, modern look.
+
+## License
+MIT License
+
